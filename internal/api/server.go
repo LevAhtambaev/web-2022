@@ -7,8 +7,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Present struct {
+	Name  string
+	Price int
+}
+type BirthdayPresents struct {
+	Person   string
+	Presents []Present
+}
+
 func StartServer() {
 	log.Println("Server start up")
+
+	list := BirthdayPresents{
+		Person: "Lev",
+		Presents: []Present{
+			{"Toy helicopter", 2000},
+			{"Headphones", 1500},
+			{"Pizza", 600},
+		},
+	}
 
 	r := gin.Default()
 
@@ -25,6 +43,14 @@ func StartServer() {
 			"title": "Main website",
 		})
 	})
+
+	r.GET("/presents", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "presents.tmpl", gin.H{
+			"Person":   list.Person,
+			"Presents": list.Presents,
+		})
+	})
+
 	r.Static("/image", "./resources")
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
