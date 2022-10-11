@@ -9,6 +9,20 @@ import (
 	"web-2022/internal/pkg/app"
 )
 
+// @title CarShowroom
+// @version 1.0
+// @description Showroom for japanese domestic market (JDM)
+
+// @contact.name API Support
+// @contact.url https://vk.com/hopply_time
+// @contact.email hopply@mail.ru
+
+// @license.name AS IS (NO WARRANTY)
+
+// @host 127.0.0.1
+// @schemes https http
+// @BasePath /
+
 func main() {
 	ctx := context.Background()
 	log.Println("app start")

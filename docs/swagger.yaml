@@ -1,0 +1,80 @@
+basePath: /
+definitions:
+  ds.Car:
+    properties:
+      color:
+        type: string
+      description:
+        type: string
+      engineType:
+        type: string
+      engineVolume:
+        type: number
+      gearbox:
+        type: string
+      mileage:
+        type: integer
+      name:
+        type: string
+      power:
+        type: integer
+      salePrice:
+        type: integer
+      typeOfDrive:
+        type: string
+      uuid:
+        type: string
+      wheel:
+        type: string
+      year:
+        type: integer
+    type: object
+  models.ModelError:
+    properties:
+      description:
+        description: description
+        type: string
+      error:
+        description: error
+        type: string
+      type:
+        description: type
+        type: string
+    type: object
+host: 127.0.0.1
+info:
+  contact:
+    email: hopply@mail.ru
+    name: API Support
+    url: https://vk.com/hopply_time
+  description: Showroom for japanese domestic market (JDM)
+  license:
+    name: AS IS (NO WARRANTY)
+  title: CarShowroom
+  version: "1.0"
+paths:
+  /cars:
+    get:
+      description: Get a list of all cars
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.Car'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ModelError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ModelError'
+      summary: Get all records
+      tags:
+      - Tests
+schemes:
+- https
+- http
+swagger: "2.0"
