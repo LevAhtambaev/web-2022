@@ -31,6 +31,14 @@ func (r *Repository) GetCarsList() ([]ds.Car, error) {
 
 }
 
+func (r *Repository) AddCar(car ds.Car) error {
+	err := r.db.Create(&car).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 //func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
 //	product := &ds.Product{}
 //
