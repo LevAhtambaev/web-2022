@@ -27,7 +27,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Tests"
+                    "Info"
                 ],
                 "summary": "Get all records",
                 "responses": {
@@ -37,10 +37,148 @@
                             "$ref": "#/definitions/ds.Car"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ModelError"
+                        }
+                    }
+                }
+            }
+        },
+        "/cars/create": {
+            "post": {
+                "description": "Adding a new car to database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Add"
+                ],
+                "summary": "Add a new car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Название машины",
+                        "name": "Name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Цена машины",
+                        "name": "SalePrice",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Год производства",
+                        "name": "Year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Тип двигателя",
+                        "name": "EngineType",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Объем двигателя",
+                        "name": "EngineVolume",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Кол-во л.с.",
+                        "name": "Power",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Тип коробки передач",
+                        "name": "Gearbox",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Привод",
+                        "name": "TypeOfDrive",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Цвет",
+                        "name": "Color",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Пробег",
+                        "name": "Mileage",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Расположение руля",
+                        "name": "Wheel",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Описание",
+                        "name": "Description",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelCarCreated"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    }
+                }
+            }
+        },
+        "/cars/price": {
+            "get": {
+                "description": "Get a price via uuid of a car",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Info"
+                ],
+                "summary": "Get price for a car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID машины",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelCarPrice"
                         }
                     },
                     "500": {
@@ -95,6 +233,23 @@
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ModelCarCreated": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "description": "success",
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.ModelCarPrice": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "string"
                 }
             }
         },

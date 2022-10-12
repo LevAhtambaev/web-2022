@@ -29,6 +29,17 @@ definitions:
       year:
         type: integer
     type: object
+  models.ModelCarCreated:
+    properties:
+      success:
+        description: success
+        type: boolean
+    type: object
+  models.ModelCarPrice:
+    properties:
+      price:
+        type: string
+    type: object
   models.ModelError:
     properties:
       description:
@@ -63,17 +74,111 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ds.Car'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ModelError'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ModelError'
       summary: Get all records
       tags:
-      - Tests
+      - Info
+  /cars/create:
+    post:
+      description: Adding a new car to database
+      parameters:
+      - description: Название машины
+        in: query
+        name: Name
+        required: true
+        type: string
+      - description: Цена машины
+        in: query
+        name: SalePrice
+        required: true
+        type: integer
+      - description: Год производства
+        in: query
+        name: Year
+        required: true
+        type: integer
+      - description: Тип двигателя
+        in: query
+        name: EngineType
+        required: true
+        type: string
+      - description: Объем двигателя
+        in: query
+        name: EngineVolume
+        required: true
+        type: number
+      - description: Кол-во л.с.
+        in: query
+        name: Power
+        required: true
+        type: integer
+      - description: Тип коробки передач
+        in: query
+        name: Gearbox
+        required: true
+        type: string
+      - description: Привод
+        in: query
+        name: TypeOfDrive
+        required: true
+        type: string
+      - description: Цвет
+        in: query
+        name: Color
+        type: string
+      - description: Пробег
+        in: query
+        name: Mileage
+        required: true
+        type: integer
+      - description: Расположение руля
+        in: query
+        name: Wheel
+        type: string
+      - description: Описание
+        in: query
+        name: Description
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ModelCarCreated'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ModelError'
+      summary: Add a new car
+      tags:
+      - Add
+  /cars/price:
+    get:
+      description: Get a price via uuid of a car
+      parameters:
+      - description: UUID машины
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ModelCarPrice'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ModelError'
+      summary: Get price for a car
+      tags:
+      - Info
 schemes:
 - https
 - http

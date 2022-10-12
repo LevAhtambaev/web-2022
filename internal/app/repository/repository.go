@@ -27,6 +27,9 @@ func (r *Repository) GetCarsList() ([]ds.Car, error) {
 
 	var cars []ds.Car
 	result := r.db.Find(&cars)
+	if result != nil {
+		return cars, result.Error
+	}
 	return cars, result.Error
 
 }
@@ -37,6 +40,15 @@ func (r *Repository) AddCar(car ds.Car) error {
 		return err
 	}
 	return nil
+}
+
+func (r *Repository) GetCarPrice(uuid string) (uint64, error) {
+	var car ds.Car
+	result := r.db.First(&car, "uuid = ?", uuid)
+	if result != nil {
+		return 0, result.Error
+	}
+	return car.SalePrice, nil
 }
 
 //func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
