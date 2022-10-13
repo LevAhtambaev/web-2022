@@ -158,6 +158,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/cars/delete": {
+            "delete": {
+                "description": "Delete a car via its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change"
+                ],
+                "summary": "Delete a car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID машины",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelCarDeleted"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    }
+                }
+            }
+        },
         "/cars/price": {
             "get": {
                 "description": "Get a price via uuid of a car",
@@ -182,6 +217,48 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.ModelCarPrice"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    }
+                }
+            }
+        },
+        "/cars/price/change": {
+            "put": {
+                "description": "Change a price for a car via its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change"
+                ],
+                "summary": "Change car price",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID машины",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Новая цена",
+                        "name": "Price",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelPriceChanged"
                         }
                     },
                     "500": {
@@ -248,6 +325,14 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ModelCarDeleted": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "boolean"
+                }
+            }
+        },
         "models.ModelCarPrice": {
             "type": "object",
             "properties": {
@@ -270,6 +355,14 @@ const docTemplate = `{
                 "type": {
                     "description": "type",
                     "type": "string"
+                }
+            }
+        },
+        "models.ModelPriceChanged": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "boolean"
                 }
             }
         }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,6 +19,10 @@ func (a *Application) StartServer() {
 	r.GET("/cars/price", a.GetCarPrice)
 
 	r.POST("/cars/create", a.AddCar)
+
+	r.PUT("/cars/price/change", a.ChangePrice)
+
+	r.DELETE("/cars/delete", a.DeleteCar)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
@@ -52,7 +57,7 @@ func (a *Application) GetList(gCtx *gin.Context) {
 
 }
 
-// GetCarPrice ist godoc
+// GetCarPrice  godoc
 // @Summary      Get price for a car
 // @Description  Get a price via uuid of a car
 // @Tags         Info
@@ -68,17 +73,78 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 		gCtx.JSON(
 			http.StatusInternalServerError,
 			&models.ModelError{
-				Description: "can`t get a list",
+				Description: "can`t get a price",
 				Error:       "db error",
 				Type:        "internal",
 			})
 		return
 	}
-
 	gCtx.JSON(
 		http.StatusOK,
 		&models.ModelCarPrice{
 			Price: strconv.FormatUint(resp, 10),
+		})
+
+}
+
+// ChangePrice   godoc
+// @Summary      Change car price
+// @Description  Change a price for a car via its uuid
+// @Tags         Change
+// @Produce      json
+// @Param UUID query string true "UUID машины"
+// @Param Price query int true "Новая цена"
+// @Success      200  {object}  models.ModelPriceChanged
+// @Failure 	 500 {object} models.ModelError
+// @Router       /cars/price/change [put]
+func (a *Application) ChangePrice(gCtx *gin.Context) {
+	inputUuid, _ := uuid.Parse(gCtx.Query("UUID"))
+	newPrice, _ := strconv.ParseUint(gCtx.Query("Price"), 10, 64)
+	err := a.repo.ChangePrice(inputUuid, newPrice)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "update failed",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+	gCtx.JSON(
+		http.StatusOK,
+		&models.ModelPriceChanged{
+			Success: true,
+		})
+
+}
+
+// DeleteCar   godoc
+// @Summary      Delete a car
+// @Description  Delete a car via its uuid
+// @Tags         Change
+// @Produce      json
+// @Param UUID query string true "UUID машины"
+// @Success      200  {object}  models.ModelCarDeleted
+// @Failure 	 500 {object} models.ModelError
+// @Router       /cars/delete [delete]
+func (a *Application) DeleteCar(gCtx *gin.Context) {
+	uuid := gCtx.Query("UUID")
+	err := a.repo.DeleteCar(uuid)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "delete failed",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+	gCtx.JSON(
+		http.StatusOK,
+		&models.ModelCarDeleted{
+			Success: true,
 		})
 
 }
@@ -130,7 +196,7 @@ func (a *Application) AddCar(gCtx *gin.Context) {
 		gCtx.JSON(
 			http.StatusInternalServerError,
 			&models.ModelError{
-				Description: "can`t get a list",
+				Description: "adding failed",
 				Error:       "db error",
 				Type:        "internal",
 			})

@@ -35,6 +35,11 @@ definitions:
         description: success
         type: boolean
     type: object
+  models.ModelCarDeleted:
+    properties:
+      price:
+        type: boolean
+    type: object
   models.ModelCarPrice:
     properties:
       price:
@@ -51,6 +56,11 @@ definitions:
       type:
         description: type
         type: string
+    type: object
+  models.ModelPriceChanged:
+    properties:
+      price:
+        type: boolean
     type: object
 host: 127.0.0.1
 info:
@@ -156,6 +166,29 @@ paths:
       summary: Add a new car
       tags:
       - Add
+  /cars/delete:
+    delete:
+      description: Delete a car via its uuid
+      parameters:
+      - description: UUID машины
+        in: query
+        name: UUID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ModelCarDeleted'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ModelError'
+      summary: Delete a car
+      tags:
+      - Change
   /cars/price:
     get:
       description: Get a price via uuid of a car
@@ -179,6 +212,34 @@ paths:
       summary: Get price for a car
       tags:
       - Info
+  /cars/price/change:
+    put:
+      description: Change a price for a car via its uuid
+      parameters:
+      - description: UUID машины
+        in: query
+        name: UUID
+        required: true
+        type: string
+      - description: Новая цена
+        in: query
+        name: Price
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ModelPriceChanged'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ModelError'
+      summary: Change car price
+      tags:
+      - Change
 schemes:
 - https
 - http

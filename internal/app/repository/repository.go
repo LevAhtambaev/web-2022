@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"web-2022/internal/app/ds"
@@ -27,10 +28,10 @@ func (r *Repository) GetCarsList() ([]ds.Car, error) {
 
 	var cars []ds.Car
 	result := r.db.Find(&cars)
-	if result != nil {
+	if result.Error != nil {
 		return cars, result.Error
 	}
-	return cars, result.Error
+	return cars, nil
 
 }
 
@@ -45,10 +46,29 @@ func (r *Repository) AddCar(car ds.Car) error {
 func (r *Repository) GetCarPrice(uuid string) (uint64, error) {
 	var car ds.Car
 	result := r.db.First(&car, "uuid = ?", uuid)
-	if result != nil {
+	if result.Error != nil {
 		return 0, result.Error
 	}
 	return car.SalePrice, nil
+}
+
+func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) error {
+	var car ds.Car
+	car.UUID = uuid
+	result := r.db.Model(&car).Update("SalePrice", price)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (r *Repository) DeleteCar(uuid string) error {
+	var car ds.Car
+	result := r.db.Delete(&car, "uuid = ?", uuid)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 //func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
