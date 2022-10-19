@@ -19,7 +19,7 @@ import (
 
 // @license.name AS IS (NO WARRANTY)
 
-// @host 127.0.0.1
+// @host 127.0.0.1:8080
 // @schemes https http
 // @BasePath /
 

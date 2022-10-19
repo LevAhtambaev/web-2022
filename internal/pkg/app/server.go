@@ -1,8 +1,10 @@
 package app
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"strconv"
@@ -16,13 +18,13 @@ func (a *Application) StartServer() {
 	r := gin.Default()
 
 	r.GET("/cars", a.GetList)
-	r.GET("/cars/price", a.GetCarPrice)
+	r.GET("/cars/:uuid", a.GetCarPrice)
 
 	r.POST("/cars/create", a.AddCar)
 
-	r.PUT("/cars/price/change", a.ChangePrice)
+	r.PUT("/cars/:uuid", a.ChangePrice)
 
-	r.DELETE("/cars/delete", a.DeleteCar)
+	r.DELETE("/cars/:uuid", a.DeleteCar)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
@@ -67,7 +69,7 @@ func (a *Application) GetList(gCtx *gin.Context) {
 // @Failure 	 500 {object} models.ModelError
 // @Router       /cars/price [get]
 func (a *Application) GetCarPrice(gCtx *gin.Context) {
-	uuid := gCtx.Query("UUID")
+	uuid := gCtx.Param("uuid")
 	resp, err := a.repo.GetCarPrice(uuid)
 	if err != nil {
 		gCtx.JSON(
@@ -98,19 +100,31 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 // @Failure 	 500 {object} models.ModelError
 // @Router       /cars/price/change [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
-	inputUuid, _ := uuid.Parse(gCtx.Query("UUID"))
+	inputUuid, _ := uuid.Parse(gCtx.Param("uuid"))
 	newPrice, _ := strconv.ParseUint(gCtx.Query("Price"), 10, 64)
 	err := a.repo.ChangePrice(inputUuid, newPrice)
-	if err != nil {
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusNotFound,
 			&models.ModelError{
-				Description: "update failed",
+				Description: err.Error(),
 				Error:       "db error",
 				Type:        "internal",
 			})
 		return
 	}
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: err.Error(),
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
+	}
+
 	gCtx.JSON(
 		http.StatusOK,
 		&models.ModelPriceChanged{
@@ -129,7 +143,7 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Failure 	 500 {object} models.ModelError
 // @Router       /cars/delete [delete]
 func (a *Application) DeleteCar(gCtx *gin.Context) {
-	uuid := gCtx.Query("UUID")
+	uuid := gCtx.Param("uuid")
 	err := a.repo.DeleteCar(uuid)
 	if err != nil {
 		gCtx.JSON(
@@ -170,26 +184,38 @@ func (a *Application) DeleteCar(gCtx *gin.Context) {
 // @Failure 500 {object} models.ModelError
 // @Router       /cars/create [Post]
 func (a *Application) AddCar(gCtx *gin.Context) {
-	salePrice, _ := strconv.ParseUint(gCtx.Query("SalePrice"), 10, 64)
-	year, _ := strconv.ParseUint(gCtx.Query("Year"), 10, 64)
-	engineVolume, _ := strconv.ParseFloat(gCtx.Query("EngineVolume"), 64)
-	power, _ := strconv.ParseUint(gCtx.Query("Power"), 10, 64)
-	mileage, _ := strconv.ParseUint(gCtx.Query("Mileage"), 10, 64)
-
-	car := ds.Car{
-		Name:         gCtx.Query("Name"),
-		SalePrice:    salePrice,
-		Year:         year,
-		EngineType:   gCtx.Query("EngineType"),
-		EngineVolume: engineVolume,
-		Power:        power,
-		Gearbox:      gCtx.Query("Gearbox"),
-		TypeOfDrive:  gCtx.Query("TypeOfDrive"),
-		Color:        gCtx.Query("Color"),
-		Mileage:      mileage,
-		Wheel:        gCtx.Query("Wheel"),
-		Description:  gCtx.Query("Description"),
+	car := ds.Car{}
+	if err := gCtx.BindJSON(&car); err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "adding failed",
+				Error:       "db error",
+				Type:        "internal",
+			})
+		return
 	}
+	//
+	//salePrice, _ := strconv.ParseUint(gCtx.Query("SalePrice"), 10, 64)
+	//year, _ := strconv.ParseUint(gCtx.Query("Year"), 10, 64)
+	//engineVolume, _ := strconv.ParseFloat(gCtx.Query("EngineVolume"), 64)
+	//power, _ := strconv.ParseUint(gCtx.Query("Power"), 10, 64)
+	//mileage, _ := strconv.ParseUint(gCtx.Query("Mileage"), 10, 64)
+
+	//car := ds.Car{
+	//	Name:         gCtx.Query("Name"),
+	//	SalePrice:    salePrice,
+	//	Year:         year,
+	//	EngineType:   gCtx.Query("EngineType"),
+	//	EngineVolume: engineVolume,
+	//	Power:        power,
+	//	Gearbox:      gCtx.Query("Gearbox"),
+	//	TypeOfDrive:  gCtx.Query("TypeOfDrive"),
+	//	Color:        gCtx.Query("Color"),
+	//	Mileage:      mileage,
+	//	Wheel:        gCtx.Query("Wheel"),
+	//	Description:  gCtx.Query("Description"),
+	//}
 
 	err := a.repo.AddCar(car)
 	if err != nil {

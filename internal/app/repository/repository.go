@@ -55,9 +55,14 @@ func (r *Repository) GetCarPrice(uuid string) (uint64, error) {
 func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) error {
 	var car ds.Car
 	car.UUID = uuid
-	result := r.db.Model(&car).Update("SalePrice", price)
-	if result.Error != nil {
-		return result.Error
+	err := r.db.First(&car, "uuid = ?", uuid).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Model(&car).Update("SalePrice", price).Error
+	//if errors.Is(err, gorm.ErrRecordNotFound)
+	if err != nil {
+		return err
 	}
 	return nil
 }
