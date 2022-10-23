@@ -1,26 +1,16 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Cars} from "./repository/car";
+import {Car} from "./components/Car";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <div className="container mx-auto flex flex-row gap-4 pt-5">
+        {Cars.map((car, key) => {
+          return <Car car={car} key={key}/>
+        })}
+      </div>
+  )
 }
 
 export default App;
