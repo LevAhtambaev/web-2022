@@ -4,7 +4,7 @@ export interface ICar {
     Image: string
     SalePrice: number
     Year: number
-    EngineType: string
+    BodyType: string
     EngineVolume: number
     Power: number
     Gearbox: string
