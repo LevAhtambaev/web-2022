@@ -29,7 +29,7 @@ export const Cars: ICar[] = [
         Gearbox: 'Механика',
         TypeOfDrive: 'Задний',
         Color: 'Белый',
-        Mileage: 35000,
+        Mileage: 42000,
         Wheel: 'Правый',
         Description: 'Широкий кузов. Шире всех широких. Крепкий, ровный и без гнили.'
     },
