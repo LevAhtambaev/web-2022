@@ -52,7 +52,7 @@ func (r *Repository) GetCarPrice(uuid string) (uint64, error) {
 	return car.SalePrice, nil
 }
 
-func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) error {
+func (r *Repository) ChangePrice(uuid uuid.UUID, price string) error {
 	var car ds.Car
 	car.UUID = uuid
 	err := r.db.First(&car, "uuid = ?", uuid).Error

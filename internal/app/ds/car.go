@@ -9,6 +9,7 @@ type Car struct {
 	Name         string
 	SalePrice    uint64
 	Year         uint64
+	BodyType     string
 	EngineType   string
 	EngineVolume float64
 	Power        uint64
@@ -18,4 +19,5 @@ type Car struct {
 	Mileage      uint64
 	Wheel        string
 	Description  string
+	Image        string
 }

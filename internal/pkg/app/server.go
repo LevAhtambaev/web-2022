@@ -12,17 +12,33 @@ import (
 	"web-2022/swagger/models"
 )
 
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func (a *Application) StartServer() {
 	log.Println("Server start up")
 
 	r := gin.Default()
 
+	r.Use(CORSMiddleware())
+
 	r.GET("/cars", a.GetList)
 	r.GET("/cars/:uuid", a.GetCarPrice)
 
-	r.POST("/cars/create", a.AddCar)
+	r.POST("/cars/", a.AddCar)
 
-	r.PUT("/cars/:uuid", a.ChangePrice)
+	r.PUT("/cars/:uuid/:price", a.ChangePrice)
 
 	r.DELETE("/cars/:uuid", a.DeleteCar)
 
@@ -101,7 +117,7 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 // @Router       /cars/price/change [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
 	inputUuid, _ := uuid.Parse(gCtx.Param("uuid"))
-	newPrice, _ := strconv.ParseUint(gCtx.Query("Price"), 10, 64)
+	newPrice := gCtx.Param("price")
 	err := a.repo.ChangePrice(inputUuid, newPrice)
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
