@@ -5,6 +5,7 @@ import {HomePage} from "./components/HomePage";
 import {Payment} from "./components/Payment"
 import {Info} from "./components/Info";
 
+export const ENDPOINT = "http://localhost:8080"
 
 function App() {
     return (

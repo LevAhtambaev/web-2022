@@ -1,10 +1,10 @@
 export interface ICar {
     UUID: string
     Name: string
-    Image: string
     SalePrice: number
     Year: number
     BodyType: string
+    EngineType: string
     EngineVolume: number
     Power: number
     Gearbox: string
@@ -13,4 +13,5 @@ export interface ICar {
     Mileage: number
     Wheel: string
     Description: string
+    Image: string
 }

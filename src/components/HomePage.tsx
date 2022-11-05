@@ -1,8 +1,19 @@
-import {Cars} from "../repository/car";
+//import {Cars} from "../repository/car";
 import {Car} from "./Car";
+import {getJson} from "../modules";
+import {useEffect, useState} from "react";
 import React from "react";
+import {ICar} from "../models";
 
 export function HomePage() {
+
+const [Cars, setCar] = useState<ICar[]>([])
+const getAllCars = async () => {
+    const result = await getJson("cars")
+    await setCar(result)
+}
+
+useEffect(() => {getAllCars()}, [])
     return (
         <div className="container  flex flex-col gap-4">
             <p className="ml-4 text-2xl font-normal text-black">
