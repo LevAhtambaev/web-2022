@@ -2,6 +2,8 @@ basePath: /
 definitions:
   ds.Car:
     properties:
+      bodyType:
+        type: string
       color:
         type: string
       description:
@@ -11,6 +13,8 @@ definitions:
       engineVolume:
         type: number
       gearbox:
+        type: string
+      image:
         type: string
       mileage:
         type: integer
@@ -31,19 +35,19 @@ definitions:
     type: object
   models.ModelCarCreated:
     properties:
-      success:
+      created:
         description: success
         type: boolean
     type: object
   models.ModelCarDeleted:
     properties:
-      price:
+      deleted:
         type: boolean
     type: object
   models.ModelCarPrice:
     properties:
       price:
-        type: string
+        type: integer
     type: object
   models.ModelError:
     properties:
@@ -59,7 +63,7 @@ definitions:
     type: object
   models.ModelPriceChanged:
     properties:
-      price:
+      changed:
         type: boolean
     type: object
 host: 127.0.0.1:8080
@@ -91,7 +95,6 @@ paths:
       summary: Get all records
       tags:
       - Info
-  /cars/create:
     post:
       description: Adding a new car to database
       parameters:
@@ -159,6 +162,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.ModelCarCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ModelError'
         "500":
           description: Internal Server Error
           schema:
@@ -166,7 +173,7 @@ paths:
       summary: Add a new car
       tags:
       - Add
-  /cars/delete:
+  /cars/:uuid:
     delete:
       description: Delete a car via its uuid
       parameters:
@@ -182,6 +189,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ModelCarDeleted'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ModelError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ModelError'
         "500":
           description: Internal Server Error
           schema:
@@ -189,7 +204,6 @@ paths:
       summary: Delete a car
       tags:
       - Change
-  /cars/price:
     get:
       description: Get a price via uuid of a car
       parameters:
@@ -205,6 +219,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ModelCarPrice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ModelError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ModelError'
         "500":
           description: Internal Server Error
           schema:
@@ -212,7 +234,6 @@ paths:
       summary: Get price for a car
       tags:
       - Info
-  /cars/price/change:
     put:
       description: Change a price for a car via its uuid
       parameters:
@@ -233,6 +254,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ModelPriceChanged'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ModelError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ModelError'
         "500":
           description: Internal Server Error
           schema:

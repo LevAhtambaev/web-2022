@@ -1,13 +1,10 @@
 package app
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"strconv"
 	"web-2022/internal/app/ds"
 	"web-2022/swagger/models"
 )
@@ -36,9 +33,9 @@ func (a *Application) StartServer() {
 	r.GET("/cars", a.GetList)
 	r.GET("/cars/:uuid", a.GetCarPrice)
 
-	r.POST("/cars/", a.AddCar)
+	r.POST("/cars", a.AddCar)
 
-	r.PUT("/cars/:uuid/:price", a.ChangePrice)
+	r.PUT("/cars/:uuid", a.ChangePrice)
 
 	r.DELETE("/cars/:uuid", a.DeleteCar)
 
@@ -47,17 +44,13 @@ func (a *Application) StartServer() {
 	log.Println("Server down")
 }
 
-type inter struct {
-	Status string `json:"status"`
-}
-
 // GetList godoc
 // @Summary      Get all records
 // @Description  Get a list of all cars
 // @Tags         Info
 // @Produce      json
 // @Success      200  {object}  ds.Car
-// @Failure 500 {object} models.ModelError
+// @Failure 	 500 {object} models.ModelError
 // @Router       /cars [get]
 func (a *Application) GetList(gCtx *gin.Context) {
 	resp, err := a.repo.GetCarsList()
@@ -66,8 +59,8 @@ func (a *Application) GetList(gCtx *gin.Context) {
 			http.StatusInternalServerError,
 			&models.ModelError{
 				Description: "can`t get a list",
-				Error:       "db error",
-				Type:        "internal",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
 			})
 		return
 	}
@@ -81,64 +74,110 @@ func (a *Application) GetList(gCtx *gin.Context) {
 // @Tags         Info
 // @Produce      json
 // @Param UUID query string true "UUID машины"
-// @Success      200  {object}  models.ModelCarPrice
-// @Failure 	 500 {object} models.ModelError
-// @Router       /cars/price [get]
+// @Success      	200 {object} models.ModelCarPrice
+// @Failure 	 	400 {object} models.ModelError
+// @Failure 	 	404 {object} models.ModelError
+// @Failure 	 	500 {object} models.ModelError
+// @Router       /cars/:uuid [get]
 func (a *Application) GetCarPrice(gCtx *gin.Context) {
-	uuid := gCtx.Param("uuid")
-	resp, err := a.repo.GetCarPrice(uuid)
+	uuid, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			&models.ModelError{
-				Description: "can`t get a price",
-				Error:       "db error",
-				Type:        "internal",
+				Description: "Invalid UUID format",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
 			})
 		return
+	}
+	resp, err := a.repo.GetCarPrice(uuid)
+	if err != nil {
+		if resp == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&models.ModelError{
+					Description: "UUID Not Found",
+					Error:       models.Err404,
+					Type:        models.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&models.ModelError{
+					Description: "Get car price failed",
+					Error:       models.Err500,
+					Type:        models.TypeInternalReq,
+				})
+			return
+		}
 	}
 	gCtx.JSON(
 		http.StatusOK,
 		&models.ModelCarPrice{
-			Price: strconv.FormatUint(resp, 10),
+			Price: resp,
 		})
 
 }
 
-// ChangePrice   godoc
-// @Summary      Change car price
-// @Description  Change a price for a car via its uuid
-// @Tags         Change
-// @Produce      json
-// @Param UUID query string true "UUID машины"
-// @Param Price query int true "Новая цена"
-// @Success      200  {object}  models.ModelPriceChanged
-// @Failure 	 500 {object} models.ModelError
-// @Router       /cars/price/change [put]
+// ChangePrice      godoc
+// @Summary         Change car price
+// @Description     Change a price for a car via its uuid
+// @Tags            Change
+// @Produce         json
+// @Param 		    UUID query string true "UUID машины"
+// @Param 			Price query uint64 true "Новая цена"
+// @Success      	200 {object} models.ModelPriceChanged
+// @Failure 		400 {object} models.ModelError
+// @Failure 		404 {object} models.ModelError
+// @Failure 	 	500 {object} models.ModelError
+// @Router          /cars/:uuid [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
-	inputUuid, _ := uuid.Parse(gCtx.Param("uuid"))
-	newPrice := gCtx.Param("price")
-	err := a.repo.ChangePrice(inputUuid, newPrice)
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	if err != nil {
 		gCtx.JSON(
-			http.StatusNotFound,
+			http.StatusBadRequest,
 			&models.ModelError{
-				Description: err.Error(),
-				Error:       "db error",
-				Type:        "internal",
+				Description: "Invalid UUID format",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
 			})
 		return
 	}
+	car := ds.Car{}
+	err = gCtx.BindJSON(&car)
 	if err != nil {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			&models.ModelError{
-				Description: err.Error(),
-				Error:       "db error",
-				Type:        "internal",
+				Description: "The price is negative or not int",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
 			})
 		return
+	}
+	resp, err := a.repo.ChangePrice(UUID, car.SalePrice)
+	if err != nil {
+		if resp == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&models.ModelError{
+					Description: "UUID Not Found",
+					Error:       models.Err404,
+					Type:        models.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&models.ModelError{
+					Description: "Change failed",
+					Error:       models.Err500,
+					Type:        models.TypeInternalReq,
+				})
+			return
+		}
 	}
 
 	gCtx.JSON(
@@ -149,27 +188,50 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 
 }
 
-// DeleteCar   godoc
-// @Summary      Delete a car
-// @Description  Delete a car via its uuid
-// @Tags         Change
-// @Produce      json
-// @Param UUID query string true "UUID машины"
-// @Success      200  {object}  models.ModelCarDeleted
-// @Failure 	 500 {object} models.ModelError
-// @Router       /cars/delete [delete]
+// DeleteCar        godoc
+// @Summary         Delete a car
+// @Description     Delete a car via its uuid
+// @Tags            Change
+// @Produce         json
+// @Param 			UUID query string true "UUID машины"
+// @Success      	200 {object} models.ModelCarDeleted
+// @Failure 		400 {object} models.ModelError
+// @Failure 		404 {object} models.ModelError
+// @Failure 	 	500 {object} models.ModelError
+// @Router          /cars/:uuid [delete]
 func (a *Application) DeleteCar(gCtx *gin.Context) {
-	uuid := gCtx.Param("uuid")
-	err := a.repo.DeleteCar(uuid)
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			&models.ModelError{
-				Description: "delete failed",
-				Error:       "db error",
-				Type:        "internal",
+				Description: "Invalid UUID format",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
 			})
 		return
+	}
+	resp, err := a.repo.DeleteCar(UUID)
+	if err != nil {
+		if resp == 404 {
+			gCtx.JSON(
+				http.StatusNotFound,
+				&models.ModelError{
+					Description: "UUID Not Found",
+					Error:       models.Err404,
+					Type:        models.TypeClientReq,
+				})
+			return
+		} else {
+			gCtx.JSON(
+				http.StatusInternalServerError,
+				&models.ModelError{
+					Description: "Change failed",
+					Error:       models.Err500,
+					Type:        models.TypeInternalReq,
+				})
+			return
+		}
 	}
 	gCtx.JSON(
 		http.StatusOK,
@@ -179,68 +241,48 @@ func (a *Application) DeleteCar(gCtx *gin.Context) {
 
 }
 
-// AddCar godoc
-// @Summary      Add a new car
-// @Description  Adding a new car to database
-// @Tags         Add
-// @Produce      json
-// @Param Name query string true "Название машины"
-// @Param SalePrice query uint64 true "Цена машины"
-// @Param Year query uint64 true "Год производства"
-// @Param EngineType query string true "Тип двигателя"
-// @Param EngineVolume query float64 true "Объем двигателя"
-// @Param Power query uint64 true "Кол-во л.с."
-// @Param Gearbox query string true "Тип коробки передач"
-// @Param TypeOfDrive query string true "Привод"
-// @Param Color query string false "Цвет"
-// @Param Mileage query uint64 true "Пробег"
-// @Param Wheel query string false "Расположение руля"
-// @Param Description query string false "Описание"
-// @Success      201  {object}  models.ModelCarCreated
-// @Failure 500 {object} models.ModelError
-// @Router       /cars/create [Post]
+// AddCar 			godoc
+// @Summary     	Add a new car
+// @Description  	Adding a new car to database
+// @Tags         	Add
+// @Produce     	json
+// @Param 			Name query string true "Название машины"
+// @Param 			SalePrice query uint64 true "Цена машины"
+// @Param 			Year query uint64 true "Год производства"
+// @Param 			EngineType query string true "Тип двигателя"
+// @Param 			EngineVolume query float64 true "Объем двигателя"
+// @Param 			Power query uint64 true "Кол-во л.с."
+// @Param 			Gearbox query string true "Тип коробки передач"
+// @Param 			TypeOfDrive query string true "Привод"
+// @Param 			Color query string false "Цвет"
+// @Param 			Mileage query uint64 true "Пробег"
+// @Param			Wheel query string false "Расположение руля"
+// @Param 			Description query string false "Описание"
+// @Success   	    201  {object}  models.ModelCarCreated
+// @Failure			400 {object} models.ModelError
+// @Failure 		500 {object} models.ModelError
+// @Router          /cars [Post]
 func (a *Application) AddCar(gCtx *gin.Context) {
 	car := ds.Car{}
-	if err := gCtx.BindJSON(&car); err != nil {
+	err := gCtx.BindJSON(&car)
+	if err != nil {
 		gCtx.JSON(
-			http.StatusInternalServerError,
+			http.StatusBadRequest,
 			&models.ModelError{
-				Description: "adding failed",
-				Error:       "db error",
-				Type:        "internal",
+				Description: "Invalid parameters",
+				Error:       models.Err400,
+				Type:        models.TypeClientReq,
 			})
 		return
 	}
-	//
-	//salePrice, _ := strconv.ParseUint(gCtx.Query("SalePrice"), 10, 64)
-	//year, _ := strconv.ParseUint(gCtx.Query("Year"), 10, 64)
-	//engineVolume, _ := strconv.ParseFloat(gCtx.Query("EngineVolume"), 64)
-	//power, _ := strconv.ParseUint(gCtx.Query("Power"), 10, 64)
-	//mileage, _ := strconv.ParseUint(gCtx.Query("Mileage"), 10, 64)
-
-	//car := ds.Car{
-	//	Name:         gCtx.Query("Name"),
-	//	SalePrice:    salePrice,
-	//	Year:         year,
-	//	EngineType:   gCtx.Query("EngineType"),
-	//	EngineVolume: engineVolume,
-	//	Power:        power,
-	//	Gearbox:      gCtx.Query("Gearbox"),
-	//	TypeOfDrive:  gCtx.Query("TypeOfDrive"),
-	//	Color:        gCtx.Query("Color"),
-	//	Mileage:      mileage,
-	//	Wheel:        gCtx.Query("Wheel"),
-	//	Description:  gCtx.Query("Description"),
-	//}
-
-	err := a.repo.AddCar(car)
+	err = a.repo.AddCar(car)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
 			&models.ModelError{
-				Description: "adding failed",
-				Error:       "db error",
-				Type:        "internal",
+				Description: "Create failed",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
 			})
 		return
 	}

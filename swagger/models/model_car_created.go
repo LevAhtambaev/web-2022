@@ -18,7 +18,7 @@ import (
 type ModelCarCreated struct {
 
 	// success
-	Success bool `json:"success,omitempty"`
+	Success bool `json:"created,omitempty"`
 }
 
 // Validate validates this model news updated

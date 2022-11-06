@@ -47,9 +47,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/cars/create": {
+            },
             "post": {
                 "description": "Adding a new car to database",
                 "produces": [
@@ -149,39 +147,10 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.ModelCarCreated"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.ModelError"
-                        }
-                    }
-                }
-            }
-        },
-        "/cars/delete": {
-            "delete": {
-                "description": "Delete a car via its uuid",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Change"
-                ],
-                "summary": "Delete a car",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "UUID машины",
-                        "name": "UUID",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ModelCarDeleted"
                         }
                     },
                     "500": {
@@ -193,7 +162,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/cars/price": {
+        "/cars/:uuid": {
             "get": {
                 "description": "Get a price via uuid of a car",
                 "produces": [
@@ -219,6 +188,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.ModelCarPrice"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -226,9 +207,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/cars/price/change": {
+            },
             "put": {
                 "description": "Change a price for a car via its uuid",
                 "produces": [
@@ -261,6 +240,63 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.ModelPriceChanged"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a car via its uuid",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Change"
+                ],
+                "summary": "Delete a car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID машины",
+                        "name": "UUID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelCarDeleted"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ModelError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -275,6 +311,9 @@ const docTemplate = `{
         "ds.Car": {
             "type": "object",
             "properties": {
+                "bodyType": {
+                    "type": "string"
+                },
                 "color": {
                     "type": "string"
                 },
@@ -288,6 +327,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "gearbox": {
+                    "type": "string"
+                },
+                "image": {
                     "type": "string"
                 },
                 "mileage": {
@@ -319,7 +361,7 @@ const docTemplate = `{
         "models.ModelCarCreated": {
             "type": "object",
             "properties": {
-                "success": {
+                "created": {
                     "description": "success",
                     "type": "boolean"
                 }
@@ -328,7 +370,7 @@ const docTemplate = `{
         "models.ModelCarDeleted": {
             "type": "object",
             "properties": {
-                "price": {
+                "deleted": {
                     "type": "boolean"
                 }
             }
@@ -337,7 +379,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "price": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -361,7 +403,7 @@ const docTemplate = `{
         "models.ModelPriceChanged": {
             "type": "object",
             "properties": {
-                "price": {
+                "changed": {
                     "type": "boolean"
                 }
             }

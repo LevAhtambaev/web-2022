@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -43,37 +44,49 @@ func (r *Repository) AddCar(car ds.Car) error {
 	return nil
 }
 
-func (r *Repository) GetCarPrice(uuid string) (uint64, error) {
+func (r *Repository) GetCarPrice(uuid uuid.UUID) (uint64, error) {
 	var car ds.Car
-	result := r.db.First(&car, "uuid = ?", uuid)
-	if result.Error != nil {
-		return 0, result.Error
+	err := r.db.First(&car, "uuid = ?", uuid).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
 	}
 	return car.SalePrice, nil
 }
 
-func (r *Repository) ChangePrice(uuid uuid.UUID, price string) error {
+func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) (int, error) {
 	var car ds.Car
-	car.UUID = uuid
 	err := r.db.First(&car, "uuid = ?", uuid).Error
 	if err != nil {
-		return err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
 	}
 	err = r.db.Model(&car).Update("SalePrice", price).Error
 	//if errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil {
-		return err
+		return 500, err
 	}
-	return nil
+	return 0, nil
 }
 
-func (r *Repository) DeleteCar(uuid string) error {
+func (r *Repository) DeleteCar(uuid uuid.UUID) (int, error) {
 	var car ds.Car
-	result := r.db.Delete(&car, "uuid = ?", uuid)
-	if result.Error != nil {
-		return result.Error
+	err := r.db.First(&car, uuid).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 404, err
+		}
+		return 500, err
 	}
-	return nil
+	err = r.db.Delete(&car, uuid).Error
+	if err != nil {
+		return 500, err
+	}
+	return 0, nil
 }
 
 //func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
