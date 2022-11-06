@@ -3,8 +3,11 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
+	_ "web-2022/docs"
 	"web-2022/internal/app/ds"
 	"web-2022/swagger/models"
 )
@@ -30,6 +33,7 @@ func (a *Application) StartServer() {
 
 	r.Use(CORSMiddleware())
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/cars", a.GetList)
 	r.GET("/cars/:uuid", a.GetCarPrice)
 
@@ -73,12 +77,12 @@ func (a *Application) GetList(gCtx *gin.Context) {
 // @Description  Get a price via uuid of a car
 // @Tags         Info
 // @Produce      json
-// @Param UUID query string true "UUID машины"
+// @Param UUID path string true "UUID машины"
 // @Success      	200 {object} models.ModelCarPrice
 // @Failure 	 	400 {object} models.ModelError
 // @Failure 	 	404 {object} models.ModelError
 // @Failure 	 	500 {object} models.ModelError
-// @Router       /cars/:uuid [get]
+// @Router       /cars/{UUID} [get]
 func (a *Application) GetCarPrice(gCtx *gin.Context) {
 	uuid, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
@@ -125,14 +129,15 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 // @Summary         Change car price
 // @Description     Change a price for a car via its uuid
 // @Tags            Change
+// @Accept       	json
 // @Produce         json
-// @Param 		    UUID query string true "UUID машины"
-// @Param 			Price query uint64 true "Новая цена"
+// @Param 		    UUID path string true "UUID машины"
+// @Param 			SalePrice body ds.CarPrice  true "Новая цена"
 // @Success      	200 {object} models.ModelPriceChanged
 // @Failure 		400 {object} models.ModelError
 // @Failure 		404 {object} models.ModelError
 // @Failure 	 	500 {object} models.ModelError
-// @Router          /cars/:uuid [put]
+// @Router          /cars/{UUID} [put]
 func (a *Application) ChangePrice(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
@@ -193,12 +198,12 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 // @Description     Delete a car via its uuid
 // @Tags            Change
 // @Produce         json
-// @Param 			UUID query string true "UUID машины"
+// @Param 			UUID path string true "UUID машины"
 // @Success      	200 {object} models.ModelCarDeleted
 // @Failure 		400 {object} models.ModelError
 // @Failure 		404 {object} models.ModelError
 // @Failure 	 	500 {object} models.ModelError
-// @Router          /cars/:uuid [delete]
+// @Router          /cars/{UUID} [delete]
 func (a *Application) DeleteCar(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
@@ -245,19 +250,9 @@ func (a *Application) DeleteCar(gCtx *gin.Context) {
 // @Summary     	Add a new car
 // @Description  	Adding a new car to database
 // @Tags         	Add
+// @Accept       	json
 // @Produce     	json
-// @Param 			Name query string true "Название машины"
-// @Param 			SalePrice query uint64 true "Цена машины"
-// @Param 			Year query uint64 true "Год производства"
-// @Param 			EngineType query string true "Тип двигателя"
-// @Param 			EngineVolume query float64 true "Объем двигателя"
-// @Param 			Power query uint64 true "Кол-во л.с."
-// @Param 			Gearbox query string true "Тип коробки передач"
-// @Param 			TypeOfDrive query string true "Привод"
-// @Param 			Color query string false "Цвет"
-// @Param 			Mileage query uint64 true "Пробег"
-// @Param			Wheel query string false "Расположение руля"
-// @Param 			Description query string false "Описание"
+// @Param 			Car body ds.Car true "Машина"
 // @Success   	    201  {object}  models.ModelCarCreated
 // @Failure			400 {object} models.ModelError
 // @Failure 		500 {object} models.ModelError

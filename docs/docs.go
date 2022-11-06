@@ -50,6 +50,9 @@ const docTemplate = `{
             },
             "post": {
                 "description": "Adding a new car to database",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -59,85 +62,13 @@ const docTemplate = `{
                 "summary": "Add a new car",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Название машины",
-                        "name": "Name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Цена машины",
-                        "name": "SalePrice",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Год производства",
-                        "name": "Year",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Тип двигателя",
-                        "name": "EngineType",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "number",
-                        "description": "Объем двигателя",
-                        "name": "EngineVolume",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Кол-во л.с.",
-                        "name": "Power",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Тип коробки передач",
-                        "name": "Gearbox",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Привод",
-                        "name": "TypeOfDrive",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Цвет",
-                        "name": "Color",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Пробег",
-                        "name": "Mileage",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Расположение руля",
-                        "name": "Wheel",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Описание",
-                        "name": "Description",
-                        "in": "query"
+                        "description": "Машина",
+                        "name": "Car",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.Car"
+                        }
                     }
                 ],
                 "responses": {
@@ -162,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/cars/:uuid": {
+        "/cars/{UUID}": {
             "get": {
                 "description": "Get a price via uuid of a car",
                 "produces": [
@@ -177,7 +108,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "UUID машины",
                         "name": "UUID",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -210,6 +141,9 @@ const docTemplate = `{
             },
             "put": {
                 "description": "Change a price for a car via its uuid",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -222,15 +156,17 @@ const docTemplate = `{
                         "type": "string",
                         "description": "UUID машины",
                         "name": "UUID",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
                         "description": "Новая цена",
-                        "name": "Price",
-                        "in": "query",
-                        "required": true
+                        "name": "SalePrice",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ds.CarPrice"
+                        }
                     }
                 ],
                 "responses": {
@@ -274,7 +210,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "UUID машины",
                         "name": "UUID",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -312,49 +248,69 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "bodyType": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Седан"
                 },
                 "color": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Синий"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Продаю машину!"
                 },
                 "engineType": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "V8"
                 },
                 "engineVolume": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 2
                 },
                 "gearbox": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Механика"
                 },
                 "image": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://res.cloudinary.com/dl0tawm7w/image/upload/v1667667247/CarsImages/chrome_YoXkkSgQS3_zsbaep.png"
                 },
                 "mileage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 27000
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Subaru WRX I Рестайлинг"
                 },
                 "power": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 268
                 },
                 "salePrice": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 3500000
                 },
                 "typeOfDrive": {
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Полный"
                 },
                 "wheel": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Левый руль"
                 },
                 "year": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2017
+                }
+            }
+        },
+        "ds.CarPrice": {
+            "type": "object",
+            "properties": {
+                "salePrice": {
+                    "type": "integer",
+                    "example": 1200000
                 }
             }
         },
@@ -416,7 +372,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "127.0.0.1:8080",
 	BasePath:         "/",
-	Schemes:          []string{"https", "http"},
+	Schemes:          []string{"http", "https"},
 	Title:            "CarShowroom",
 	Description:      "Showroom for japanese domestic market (JDM)",
 	InfoInstanceName: "swagger",
