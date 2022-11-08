@@ -3,7 +3,7 @@ import {useLocation} from "react-router-dom"
 
 export function Payment() {
     return (
-        <div>
+        <div className = "bg-gray-100 min-h-screen">
             <p className="ml-4 text-2xl font-normal text-black">
                 Cars / {useLocation().state.name}
             </p>
@@ -23,7 +23,7 @@ export function Payment() {
             </p>
 
             <p className="my-8 text-center">
-                <Link to="/"
+                <Link to="/cars"
                       className="border-4 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white py-1 px-3 rounded-full text-2xl font-bold"
                 >
                     Обратно на главную

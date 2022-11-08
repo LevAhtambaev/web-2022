@@ -1,6 +1,6 @@
 import React from "react"
 
-export function Info() {
+export function ShoppingCart() {
     return(
         <div className="bg-gray-100 min-h-screen">
             <p className="ml-4 text-2xl font-normal text-black">

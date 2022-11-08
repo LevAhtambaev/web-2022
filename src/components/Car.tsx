@@ -12,7 +12,7 @@ export function Car(props: CarProps) {
             //"border py-4 px-4 rounded flex flex-col items-center mb-2 row-span-1 col-span-1"
             className="ml-16 border border-slate-300 py-0 px-0 rounded mb-2 grid grid-rows-4 grid-cols-6"
         >
-            <img src={props.car.Image} className="row-span-4 place-self-start object-cover h-50 w-96 pt-2 pl-2 pb-2 rounded-3xl" alt={props.car.Name}/>
+            <img src={props.car.Image} className="row-span-4 place-self-start  h-44 w-96 pt-2 pl-2 pb-2 rounded-3xl" alt={props.car.Name}/>
             <p className="col-span-2 place-self-center text-2xl font-bold">{ props.car.Name }</p>
             <p className="place-self-center font-bold text-lg">{props.car.SalePrice} рублей</p>
             <p className="place-self-center text-lg">{props.car.Year}</p>

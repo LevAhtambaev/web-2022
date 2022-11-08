@@ -15,7 +15,8 @@ const getAllCars = async () => {
 
 useEffect(() => {getAllCars()}, [])
     return (
-        <div className="container  flex flex-col gap-4">
+        <div className="bg-gray-100 min-h-screen">
+        <div className=" flex flex-col gap-4 container">
             <p className="ml-4 text-2xl font-normal text-black">
                 Cars
             </p>
@@ -24,5 +25,7 @@ useEffect(() => {getAllCars()}, [])
                 return <Car car={car} key={key}/>
             })}
         </div>
+        </div>
+
     )
 }
