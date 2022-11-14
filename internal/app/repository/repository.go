@@ -28,7 +28,7 @@ func New(ctx context.Context) (*Repository, error) {
 func (r *Repository) GetCarsList() ([]ds.Car, error) {
 
 	var cars []ds.Car
-	result := r.db.Find(&cars)
+	result := r.db.Order("sale_price desc").Find(&cars)
 	if result.Error != nil {
 		return cars, result.Error
 	}
@@ -88,32 +88,3 @@ func (r *Repository) DeleteCar(uuid uuid.UUID) (int, error) {
 	}
 	return 0, nil
 }
-
-//func (r *Repository) GetProductByID(id uint) (*ds.Product, error) {
-//	product := &ds.Product{}
-//
-//	err := r.db.First(product, "id = ?", "1").Error // find product with code D42
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return product, nil
-//}
-//
-//func (r *Repository) NewRandRecord() error {
-//	min := 100
-//	max := 9000
-//	newRecord := ds.Product{
-//		Code:  "rand",
-//		Price: uint(rand.Intn(max-min+1) + min),
-//	}
-//	err := r.db.Create(&newRecord).Error // find product with code D42
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
-//
-//func (r *Repository) CreateProduct(product ds.Product) error {
-//	return r.db.Create(product).Error
-//}
