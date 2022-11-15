@@ -1,5 +1,5 @@
 export interface ICar {
-
+    UUID: string
     Name: string
     SalePrice: number
     Year: number
@@ -14,4 +14,9 @@ export interface ICar {
     Wheel: string
     Description: string
     Image: string
+}
+
+export interface ICart {
+    UUID: string
+    Car: string
 }

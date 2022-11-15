@@ -1,6 +1,7 @@
 import {Link} from "react-router-dom"
 import {useContext} from "react";
 import {MyContext} from "./HomePage";
+import {AddToCart} from "../requests/AddToCart";
 
 
 
@@ -29,6 +30,11 @@ export function Car() {
             <p className="place-self-center text-lg">{ctx.Color}</p>
             <p className="place-self-center text-lg">Купе</p>
             <p className="place-self-center text-lg">{ctx.Wheel}</p>
+
+
+            <p className="place-self-center col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                {AddToCart(ctx.UUID)}
+            </p>
 
 
 
