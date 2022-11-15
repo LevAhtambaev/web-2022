@@ -36,6 +36,12 @@ func (r *Repository) GetCarsList() ([]ds.Car, error) {
 
 }
 
+func (r *Repository) GetCar(uuid uuid.UUID) (ds.Car, error) {
+	var car ds.Car
+	err := r.db.First(&car, uuid).Error
+	return car, err
+}
+
 func (r *Repository) AddCar(car ds.Car) error {
 	err := r.db.Create(&car).Error
 	if err != nil {

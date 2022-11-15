@@ -5,7 +5,7 @@ import (
 )
 
 type Car struct {
-	UUID         uuid.UUID `db:"uuid" gorm:"type:uuid;default:uuid_generate_v4();primary_key" json:"-"`
+	UUID         uuid.UUID `db:"uuid" gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name         string    `db:"name" example:"Subaru WRX I Рестайлинг"`
 	SalePrice    uint64    `db:"sale_price" example:"3500000"`
 	Year         uint64    `db:"year" example:"2017"`

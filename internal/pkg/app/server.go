@@ -15,6 +15,7 @@ import (
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
 
 		if c.Request.Method == "OPTIONS" {
@@ -35,7 +36,10 @@ func (a *Application) StartServer() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/cars", a.GetList)
-	r.GET("/cars/:uuid", a.GetCarPrice)
+	r.GET("/cars/:uuid", a.GetCar)
+	r.GET("/cart", a.GetCart)
+
+	r.GET("/cars/price/:uuid", a.GetCarPrice)
 
 	r.POST("/cars", a.AddCar)
 	r.POST("/cart", a.AddToCart)
@@ -362,5 +366,38 @@ func (a *Application) DeleteFromCart(gCtx *gin.Context) {
 		&models.ModelCartDeleted{
 			Success: true,
 		})
+
+}
+
+func (a *Application) GetCar(gCtx *gin.Context) {
+	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	resp, err := a.repo.GetCar(UUID)
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "Can't get a car",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
+			})
+		return
+	}
+
+	gCtx.JSON(http.StatusOK, resp)
+}
+
+func (a *Application) GetCart(gCtx *gin.Context) {
+	resp, err := a.repo.GetCart()
+	if err != nil {
+		gCtx.JSON(
+			http.StatusInternalServerError,
+			&models.ModelError{
+				Description: "can`t get a list",
+				Error:       models.Err500,
+				Type:        models.TypeInternalReq,
+			})
+		return
+	}
+	gCtx.JSON(http.StatusOK, resp)
 
 }
