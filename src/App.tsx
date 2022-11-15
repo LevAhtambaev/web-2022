@@ -10,7 +10,7 @@ export const ENDPOINT = "http://localhost:8080"
 
 function App() {
     return (
-        <BrowserRouter basename="/">
+        <BrowserRouter>
             <Navbar>
             <Routes>
                 <Route path="/cars" element={<HomePage/>}/>

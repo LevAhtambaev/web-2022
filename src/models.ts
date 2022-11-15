@@ -1,5 +1,5 @@
 export interface ICar {
-    UUID: string
+
     Name: string
     SalePrice: number
     Year: number
