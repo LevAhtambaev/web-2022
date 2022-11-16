@@ -32,11 +32,11 @@ export function Cart() {
             <p className="place-self-center text-lg">{Car.Color}</p>
             <p className="place-self-center text-lg">Купе</p>
             <p className="place-self-center text-lg">{Car.Wheel}</p>
-
-            <p className="place-self-center col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            <form className="place-self-center col-span-3">
+            <p className="rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                 {DeleteFromCart(ctx.Car)}
             </p>
-
+            </form>
 
         </div>
     )

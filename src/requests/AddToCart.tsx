@@ -1,6 +1,4 @@
-
 import {addToCart} from "../modules";
-
 
 export function AddToCart(uuid: string) {
 
