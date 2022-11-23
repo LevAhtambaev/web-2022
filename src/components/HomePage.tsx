@@ -23,11 +23,7 @@ export function HomePage() {
 
     const minDistance = 500000;
 
-    const handleChange = (
-        event: Event,
-        newValue: number | number[],
-        activeThumb: number,
-    ) => {
+    const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (!Array.isArray(newValue)) {
             return;
         }
@@ -38,6 +34,30 @@ export function HomePage() {
             setPrice([price[0], Math.max(newValue[1], price[0] + minDistance)]);
         }
     };
+
+    const marks = [
+        {
+            value: 0,
+            label: '0 Р',
+        },
+        {
+            value: 2000000,
+            label: '2 млн Р',
+        },
+        {
+            value: 5000000,
+            label: '5 млн Р',
+        },
+        {
+            value: 10000000,
+            label: '10 млн Р',
+        },
+    ];
+
+    function valuetext(price: number) {
+        return `${price} Р`;
+    }
+
 
     return (
         <div>
@@ -52,12 +72,14 @@ export function HomePage() {
                         />
                     </form>
                 </div>
-                <div className="ml-10 bg-blend-color-burn flex pt-5 place-content-center">
+                <div className="flex pt-5 place-content-center">
                     <Box sx={{ width: 300 }}>
                         <Slider
                             aria-label="Price filter"
                             valueLabelDisplay="auto"
+                            getAriaValueText={valuetext}
                             value={price}
+                            marks={marks}
                             onChange={handleChange}
                             disableSwap
                             step={100000}
