@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {NavLink} from "react-router-dom";
-import {SearchComponent} from "./Search";
+
 
 
 const navigation = [
@@ -42,9 +42,6 @@ export  function Navbar(props: { children: any }) {
                                         ))}
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                    {SearchComponent()}
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
