@@ -1,21 +1,19 @@
 package repository
 
 import (
-	"context"
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"web-2022/internal/app/ds"
-	"web-2022/internal/app/dsn"
 )
 
 type Repository struct {
 	db *gorm.DB
 }
 
-func New(ctx context.Context) (*Repository, error) {
-	db, err := gorm.Open(postgres.Open(dsn.FromEnv()), &gorm.Config{})
+func New(dsn string) (*Repository, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
@@ -116,4 +114,21 @@ func (r *Repository) DeleteFromCart(car uuid.UUID) (int, error) {
 		return 500, err
 	}
 	return 0, nil
+}
+
+func (r *Repository) Register(user *ds.User) error {
+	return r.db.Create(user).Error
+}
+
+func (r *Repository) GetUserByLogin(login string) (*ds.User, error) {
+	user := &ds.User{
+		Name: login,
+	}
+
+	err := r.db.First(user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
