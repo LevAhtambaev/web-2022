@@ -46,7 +46,7 @@ func (a *Application) StartServer() {
 	r.POST("/cart", a.AddToCart)
 	r.POST("/login", a.Login)
 	r.POST("/sign_up", a.Register)
-	r.POST("/logout", a.Logout)
+	r.GET("/logout", a.Logout)
 
 	r.PUT("/cars/:uuid", a.ChangePrice)
 
