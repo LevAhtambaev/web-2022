@@ -14,7 +14,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export  function Navbar(props: { children: any }) {
+export  function Navbar() {
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -93,7 +93,7 @@ export  function Navbar(props: { children: any }) {
                             </div>
                         </div>
                     </div>
-                    {props.children}
+
                 </>
             )}
         </Disclosure>

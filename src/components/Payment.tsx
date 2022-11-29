@@ -1,8 +1,11 @@
 import {Link} from "react-router-dom"
 import {useLocation} from "react-router-dom"
+import {Navbar} from "./Navbar";
+import React from "react";
 
 export function Payment() {
     return (
+        <><Navbar/>
         <div className = "bg-gray-100 min-h-screen">
             <p className="ml-4 text-2xl font-normal text-black">
                 Cars / {useLocation().state.name}
@@ -32,5 +35,6 @@ export function Payment() {
 
             {/*<img src="/resourses/Payment.jpg" width="23%" className="mx-auto" alt="Payment"/>*/}
         </div>
+        </>
     )
 }

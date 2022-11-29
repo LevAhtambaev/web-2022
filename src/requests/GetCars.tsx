@@ -1,5 +1,5 @@
 import {useEffect, useReducer} from "react";
-import {getJsonCars} from "../modules";
+import {getJson} from "../modules";
 
 const initialState = {cars: []}
 const success = "Success"
@@ -20,7 +20,7 @@ export function GetCars() {
     const url = `cars`
 
     useEffect(() => {
-        getJsonCars(url).then((result) => {
+        getJson(url).then((result) => {
             dispatch({type: success, cars: result})
         })
     }, [url])

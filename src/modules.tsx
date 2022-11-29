@@ -1,37 +1,20 @@
 import {ENDPOINT} from "./App";
-import {ICar} from "./models";
-import {ICart} from "./models";
+import axios from "axios";
 
-export const getJsonCars = async (url: string) => {
-     const res = await fetch(`${ENDPOINT}/${url}`).then((r) => r.json() as Promise<ICar[]>)
-     return res
-}
-
-export const getJsonCar = async (url: string) => {
-    const res = await fetch(`${ENDPOINT}/${url}`).then((r) => r.json() as Promise<ICar>)
-    return res
-}
-
-export const getJsonCart = async (url: string) => {
-    const res = await fetch(`${ENDPOINT}/${url}`).then((r) => r.json() as Promise<ICart[]>)
-    return res
-}
-
-export const deleteCart = async (url: string) => {
-    const res = await fetch(`${ENDPOINT}/${url}`, {method: "DELETE"})
-    return res
+export function getJson(url: string) {
+     return axios.get(`${ENDPOINT}/${url}`).then(r => r.data)
 }
 
 
+export function deleteCart (url: string) {
+    return axios.delete(`${ENDPOINT}/${url}`).then(r => r.data)
+}
 
 
-export const addToCart = async (url: string, uuid: string) => {
-    const res = await fetch(`${ENDPOINT}/${url}` , {
-        method: "POST",
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({Car: uuid})
+export function addToCart (url: string, uuid: string)  {
+    const body = { Car: uuid }
+    return  axios.post(`${ENDPOINT}/${url}`, body).then(function (response) {
+        console.log(response);
     })
-    return res
+
 }

@@ -6,6 +6,7 @@ import {GetCars} from "../requests/GetCars";
 import {car_context} from "../context/context";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import {Navbar} from "./Navbar";
 
 export const MyContext = createContext(car_context);
 
@@ -61,6 +62,7 @@ export function HomePage() {
 
     return (
         <div>
+            <Navbar/>
             <div className="bg-gray-100 min-h-screen ">
                 <div className="flex pt-5 place-content-center">
                     <form>
@@ -75,7 +77,7 @@ export function HomePage() {
                 <div className="flex pt-5 place-content-center">
                     <Box sx={{ width: 300 }}>
                         <Slider
-                            aria-label="Price filter"
+                            getAriaLabel={() => 'Price filter'}
                             valueLabelDisplay="auto"
                             getAriaValueText={valuetext}
                             value={price}
@@ -89,9 +91,9 @@ export function HomePage() {
                     </Box>
                 </div>
                 <div className="pt-5 flex flex-col gap-4 mx-auto container">
-                    {filteredCars.filter((car: { SalePrice: number; }) => car.SalePrice >= price[0] && car.SalePrice <= price[1]).map((car: ICar) => {
+                    {filteredCars.filter((car: { SalePrice: number; }) => car.SalePrice >= price[0] && car.SalePrice <= price[1]).map((car: ICar, key: any) => {
                         return (
-                            <MyContext.Provider value={car}>
+                            <MyContext.Provider value={car} key={key}>
                                 <Car/>
                             </MyContext.Provider>
                         )
