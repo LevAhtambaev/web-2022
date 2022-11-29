@@ -26,3 +26,11 @@ export function createUser (url: string, name: string, pass: string)  {
     })
 
 }
+
+export function loginUser (url: string, name: string, pass: string)  {
+    const body = { login: name, password: pass }
+    return  axios.post(`${ENDPOINT}/${url}`, body).then(function (response) {
+        console.log(response);
+    })
+
+}
