@@ -18,3 +18,11 @@ export function addToCart (url: string, uuid: string)  {
     })
 
 }
+
+export function createUser (url: string, name: string, pass: string)  {
+    const body = { name: name, pass: pass }
+    return  axios.post(`${ENDPOINT}/${url}`, body).then(function (response) {
+        console.log(response);
+    })
+
+}
