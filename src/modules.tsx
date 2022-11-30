@@ -40,8 +40,17 @@ export function loginUser (url: string, name: string, pass: string)  {
 }
 
 export function logoutUser (url: string) {
-    let access_token = document.cookie.replace("access_token=", "")
+    let tokens = document.cookie.split(' ')
+    let access_token = ''
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i].startsWith("access_token=")) {
+            access_token = tokens[i].replace("access_token=", "")
+        }
+    }
+    access_token = access_token.replace(";", "")
     return axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
         "Authorization": `Bearer ${access_token}`
-    }}).then(r => r.data)
+    }}).then(function (response) {
+        window.location.replace('/login')
+    })
 }
