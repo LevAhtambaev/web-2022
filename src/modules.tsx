@@ -41,7 +41,7 @@ export function loginUser (url: string, name: string, pass: string)  {
 
 export function logoutUser (url: string) {
     let access_token = document.cookie.replace("access_token=", "")
-    return axios.get(`${ENDPOINT}/${url}`, {headers: {
+    return axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
         "Authorization": `Bearer ${access_token}`
     }}).then(r => r.data)
 }
