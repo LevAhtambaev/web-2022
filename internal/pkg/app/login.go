@@ -27,11 +27,6 @@ type loginResp struct {
 	TokenType   string        `json:"token_type"`
 }
 
-const (
-	login    = "login"
-	password = "pass"
-)
-
 func (a *Application) Login(gCtx *gin.Context) {
 	cfg := a.config
 	req := &loginReq{}
@@ -76,11 +71,13 @@ func (a *Application) Login(gCtx *gin.Context) {
 			return
 		}
 
+		gCtx.SetCookie("access_token", strToken, int(cfg.JWT.ExpiresIn), "/", "localhost", false, false)
 		gCtx.JSON(http.StatusOK, loginResp{
 			ExpiresIn:   cfg.JWT.ExpiresIn,
 			AccessToken: strToken,
 			TokenType:   "Bearer",
 		})
+		return
 	}
 
 	gCtx.AbortWithStatus(http.StatusForbidden) // отдаем 403 ответ в знак того что доступ запрещен
@@ -179,5 +176,6 @@ func (a *Application) Logout(gCtx *gin.Context) {
 		return
 	}
 
+	gCtx.SetCookie("access_token", "", -1, "/", "localhost", false, true)
 	gCtx.Status(http.StatusOK)
 }
