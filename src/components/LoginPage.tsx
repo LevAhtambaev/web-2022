@@ -49,11 +49,11 @@ export function Login() {
                             className="block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         />
                     </div>
-                    <div className="mt-6">
-                        {LoginUser(name, pass)}
-                    </div>
-                </form>
 
+                </form>
+                <div className="mt-6">
+                    {LoginUser(name, pass)}
+                </div>
                 <p className="mt-8 text-xl font-light text-center text-indigo-700">
                     {" "}
                     Отсутствует аккаунт?{" "}

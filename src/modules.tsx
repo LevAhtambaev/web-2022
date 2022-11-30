@@ -28,15 +28,20 @@ export function createUser (url: string, name: string, pass: string)  {
 
 }
 
-export let redirect = "/login"
-
-
-
-
 export function loginUser (url: string, name: string, pass: string)  {
     const body = { login: name, password: pass }
-    return  axios.post(`${ENDPOINT}/${url}`, body).then(function (response) {
-        redirect = "/cars"
-    }).catch(function (reason){redirect = "/login"})
 
+    return  axios.post(`${ENDPOINT}/${url}`, body, { withCredentials: true }).then(function (response) {
+        window.location.replace('/cars')
+    }).catch(error => {
+        window.location.replace('/login')
+    })
+
+}
+
+export function logoutUser (url: string) {
+    let access_token = document.cookie.replace("access_token=", "")
+    return axios.get(`${ENDPOINT}/${url}`, {headers: {
+        "Authorization": `Bearer ${access_token}`
+    }}).then(r => r.data)
 }
