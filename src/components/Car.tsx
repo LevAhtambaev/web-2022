@@ -20,19 +20,20 @@ export function Car() {
         showAddCartButton = false
     }
     return (
-        <div
-            //"border py-4 px-4 rounded flex flex-col items-center mb-2 row-span-1 col-span-1"
-            className="ml-16 border border-slate-300 py-0 px-0 rounded mb-2 grid grid-rows-4 grid-cols-6"
-        >
-            <img src={ctx.Image} className="row-span-4 place-self-start  h-44 w-96 pt-2 pl-2 pb-2 rounded-3xl" alt={ctx.Name}/>
-            <p className="col-span-2 place-self-center text-2xl font-bold">{ ctx.Name }</p>
-            <p className="place-self-center font-bold text-lg">{ctx.SalePrice} рублей</p>
-            <p className="place-self-center text-lg">{ctx.Year}</p>
+        <div className="sm:ml-16 border-2 border-slate-300 hover:border-slate-500 sm:hover:scale-105 sm:hover:-translate-y-2 rounded mb-2 grid grid-rows-11 grid-cols-2 sm:grid-rows-4 sm:grid-cols-6">
+
+            <p className="sm:hidden col-span-2 sm:col-span-1 place-self-center text-2xl font-bold">{ ctx.Name }</p>
+            <p className="sm:hidden col-span-2 sm:col-span-1 place-self-center font-bold text-lg">{ctx.SalePrice} рублей</p>
+
+            <img src={ctx.Image} className="col-span-2 sm:col-span-1 row-span-4 place-self-start  sm:h-44 sm:w-96 pt-2 pl-2 pb-2 px-2 sm:px-0 rounded-3xl" alt={ctx.Name}/>
+            <p className="mob:hidden col-span-2 place-self-center text-2xl font-bold">{ ctx.Name }</p>
+            <p className="mob:hidden place-self-center font-bold text-lg">{ctx.SalePrice} рублей</p>
+            <p className="mob:hidden place-self-center text-lg">{ctx.Year}</p>
             <p className="place-self-center text-lg">{ctx.Mileage} км</p>
             <p className="place-self-center text-lg">{ctx.EngineVolume}л/{ctx.Power}л.с.</p>
             <p className="place-self-center text-lg">{ctx.TypeOfDrive}</p>
             <Link to="/payment"
-                className="place-self-center row-span-2 col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                className="mob:hidden place-self-center sm:row-span-2 sm:col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                   state={{name: ctx.Name, sell_price: ctx.SalePrice}}
             >
                 Приобрести
@@ -41,14 +42,18 @@ export function Car() {
             <p className="place-self-center text-lg">{ctx.Gearbox}</p>
             <p className="place-self-center text-lg">{ctx.Color}</p>
             <p className="place-self-center text-lg">Купе</p>
-            <p className="place-self-center text-lg">{ctx.Wheel}</p>
+            <p className="mob:hidden place-self-center text-lg">{ctx.Wheel}</p>
 
-
-            {showAddCartButton && <p className="place-self-center col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            {showAddCartButton && <p className="place-self-center sm:col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                 {AddToCart(ctx.UUID)}
             </p>}
 
-
+            <Link to="/payment"
+                  className="sm:hidden place-self-center sm:row-span-2 sm:col-span-3 rounded-full bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                  state={{name: ctx.Name, sell_price: ctx.SalePrice}}
+            >
+                Приобрести
+            </Link>
 
         </div>
 

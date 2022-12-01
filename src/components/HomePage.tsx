@@ -74,7 +74,7 @@ export function HomePage() {
                         />
                     </form>
                 </div>
-                <div className="flex pt-5 sm:pt-32 place-content-center">
+                <div className="flex pt-5 place-content-center">
                     <Box sx={{ width: 300 }}>
                         <Slider
                             getAriaLabel={() => 'Price filter'}
@@ -90,7 +90,7 @@ export function HomePage() {
                         />
                     </Box>
                 </div>
-                <div className="pt-5 flex flex-col gap-4 mx-auto container">
+                <div className="px-2 sm:px-0 pt-5 flex flex-col gap-4 mx-auto container">
                     {filteredCars.filter((car: { SalePrice: number; }) => car.SalePrice >= price[0] && car.SalePrice <= price[1]).map((car: ICar, key: any) => {
                         return (
                             <MyContext.Provider value={car} key={key}>

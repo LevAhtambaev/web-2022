@@ -1,6 +1,6 @@
 {
-  "name": "Tile Notes",
-  "short_name": "Tile Notes",
+  "name": "Cars Showroom",
+  "short_name": "Cars",
   "start_url": "/cars",
   "display": "standalone",
   "background_color": "#fdfdfd",
