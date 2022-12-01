@@ -93,13 +93,14 @@ func (r *Repository) DeleteCar(uuid uuid.UUID) (int, error) {
 	return 0, nil
 }
 
-func (r *Repository) GetCart() ([]ds.Cart, error) {
+func (r *Repository) GetCart(userUUID uuid.UUID) ([]ds.Cart, error) {
 	var cart []ds.Cart
-	err := r.db.Find(&cart).Error
+	err := r.db.Find(&cart).Where("userUUID = ?", userUUID).Error
 	return cart, err
 }
 
-func (r *Repository) AddToCart(cart ds.Cart) error {
+func (r *Repository) AddToCart(cart ds.Cart, userUUID uuid.UUID) error {
+	cart.UserUUID = userUUID
 	err := r.db.Create(&cart).Error
 	if err != nil {
 		return err
@@ -107,9 +108,9 @@ func (r *Repository) AddToCart(cart ds.Cart) error {
 	return nil
 }
 
-func (r *Repository) DeleteFromCart(car uuid.UUID) (int, error) {
+func (r *Repository) DeleteFromCart(car uuid.UUID, userUUID uuid.UUID) (int, error) {
 	var cart ds.Cart
-	err := r.db.Where("car = ?", car).Delete(&cart).Error
+	err := r.db.Where("car = ? AND user_uuid = ?", car, userUUID).Delete(&cart).Error
 	if err != nil {
 		return 500, err
 	}

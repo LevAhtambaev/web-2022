@@ -9,7 +9,10 @@ import (
 )
 
 func (a *Application) GetCart(gCtx *gin.Context) {
-	resp, err := a.repo.GetCart()
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
+	resp, err := a.repo.GetCart(userUUID)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -25,6 +28,8 @@ func (a *Application) GetCart(gCtx *gin.Context) {
 }
 
 func (a *Application) AddToCart(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
 	cart := ds.Cart{}
 	err := gCtx.BindJSON(&cart)
 	if err != nil {
@@ -37,7 +42,7 @@ func (a *Application) AddToCart(gCtx *gin.Context) {
 			})
 		return
 	}
-	err = a.repo.AddToCart(cart)
+	err = a.repo.AddToCart(cart, userUUID)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,
@@ -58,6 +63,9 @@ func (a *Application) AddToCart(gCtx *gin.Context) {
 
 func (a *Application) DeleteFromCart(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
+	jwtStr := gCtx.GetHeader("Authorization")
+	userUUID := a.GetUserByToken(jwtStr)
+
 	if err != nil {
 		gCtx.JSON(
 			http.StatusBadRequest,
@@ -68,7 +76,7 @@ func (a *Application) DeleteFromCart(gCtx *gin.Context) {
 			})
 		return
 	}
-	resp, err := a.repo.DeleteFromCart(UUID)
+	resp, err := a.repo.DeleteFromCart(UUID, userUUID)
 	if err != nil {
 		if resp == 404 {
 			gCtx.JSON(
