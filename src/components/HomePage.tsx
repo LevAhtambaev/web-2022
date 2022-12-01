@@ -74,7 +74,7 @@ export function HomePage() {
                         />
                     </form>
                 </div>
-                <div className="flex pt-5 place-content-center">
+                <div className="flex pt-5 sm:pt-32 place-content-center">
                     <Box sx={{ width: 300 }}>
                         <Slider
                             getAriaLabel={() => 'Price filter'}
