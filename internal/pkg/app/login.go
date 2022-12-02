@@ -178,3 +178,10 @@ func (a *Application) Logout(gCtx *gin.Context) {
 	gCtx.SetCookie("access_token", "", -1, "/", "localhost", false, true)
 	gCtx.Status(http.StatusOK)
 }
+
+func (a *Application) Role(gCtx *gin.Context) {
+	jwtStr := gCtx.GetHeader("Authorization")
+	role := a.GetRoleByToken(jwtStr)
+
+	gCtx.JSON(http.StatusOK, role)
+}

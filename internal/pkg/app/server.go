@@ -39,22 +39,22 @@ func (a *Application) StartServer() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/cars", a.GetList)
 	r.GET("/cars/:uuid", a.GetCar)
-	r.GET("/cart", a.GetCart)
 
 	r.GET("/cars/price/:uuid", a.GetCarPrice)
 
-	r.POST("/cars", a.AddCar)
 	r.POST("/cart", a.AddToCart)
 	r.POST("/login", a.Login)
 	r.POST("/sign_up", a.Register)
 	r.GET("/logout", a.Logout)
+	r.GET("/role", a.Role)
 
 	r.PUT("/cars/:uuid", a.ChangePrice)
 
 	r.DELETE("/cars/:uuid", a.DeleteCar)
 	r.DELETE("/cart/:uuid", a.DeleteFromCart)
 
-	r.Use(a.WithAuthCheck(role.Manager, role.Admin)).GET("/ping", a.Ping)
+	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
+	r.Use(a.WithAuthCheck(role.Manager)).POST("/cars", a.AddCar)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 

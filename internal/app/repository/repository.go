@@ -95,7 +95,7 @@ func (r *Repository) DeleteCar(uuid uuid.UUID) (int, error) {
 
 func (r *Repository) GetCart(userUUID uuid.UUID) ([]ds.Cart, error) {
 	var cart []ds.Cart
-	err := r.db.Find(&cart).Where("userUUID = ?", userUUID).Error
+	err := r.db.Where("user_uuid = ?", userUUID).Find(&cart).Error
 	return cart, err
 }
 
