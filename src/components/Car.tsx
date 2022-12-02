@@ -2,19 +2,13 @@ import {Link} from "react-router-dom"
 import {useContext} from "react";
 import {MyContext} from "./HomePage";
 import {AddToCart} from "../requests/AddToCart";
+import {getToken} from "../modules";
 
 
 
 export function Car() {
     const ctx = useContext(MyContext)
-    let tokens = document.cookie.split(' ')
-    let access_token = ''
-    for (var i = 0; i < tokens.length; i++) {
-        if (tokens[i].startsWith("access_token=")) {
-            access_token = tokens[i].replace("access_token=", "")
-        }
-    }
-    access_token = access_token.replace(";", "")
+    let access_token = getToken()
     let showAddCartButton = true
     if (access_token == "") {
         showAddCartButton = false
@@ -25,7 +19,7 @@ export function Car() {
             <p className="sm:hidden col-span-2 sm:col-span-1 place-self-center text-2xl font-bold">{ ctx.Name }</p>
             <p className="sm:hidden col-span-2 sm:col-span-1 place-self-center font-bold text-lg">{ctx.SalePrice} рублей</p>
 
-            <img src={ctx.Image} className="col-span-2 sm:col-span-1 row-span-4 place-self-start  sm:h-44 sm:w-96 pt-2 pl-2 pb-2 px-2 sm:px-0 rounded-3xl" alt={ctx.Name}/>
+            <img src={ctx.Image} className="col-span-2 sm:col-span-1 row-span-4 place-self-start  sm:h-44 sm:w-96 pt-2 pl-2 pb-2 px-2 sm:px-1 rounded-3xl" alt={ctx.Name}/>
             <p className="mob:hidden col-span-2 place-self-center text-2xl font-bold">{ ctx.Name }</p>
             <p className="mob:hidden place-self-center font-bold text-lg">{ctx.SalePrice} рублей</p>
             <p className="mob:hidden place-self-center text-lg">{ctx.Year}</p>

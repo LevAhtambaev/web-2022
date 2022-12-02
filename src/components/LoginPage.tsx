@@ -29,7 +29,7 @@ export function Login() {
                             Login
                         </label>
                         <input
-                            type="login"
+                            type="text"
                             onChange={handleChangeName}
                             value={name}
                             className="block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -43,7 +43,7 @@ export function Login() {
                             Password
                         </label>
                         <input
-                            type="password"
+                            type="text"
                             onChange={handleChangePass}
                             value={pass}
                             className="block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40"

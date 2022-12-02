@@ -1,5 +1,7 @@
 import {useEffect, useReducer} from "react";
-import {getJson} from "../modules";
+import {getToken} from "../modules";
+import axios from "axios";
+import {ENDPOINT} from "../App";
 
 const initialState = {cart: []}
 const success = "Success"
@@ -18,9 +20,12 @@ function reducer(state: any, action: { type: any; payload: any; }) {
 export function GetCart() {
     const [state, dispatch] = useReducer(reducer, initialState)
     const url = `cart`
+    let access_token = getToken()
 
     useEffect(() => {
-        getJson(url).then((result) => {
+        axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
+                "Authorization": `Bearer ${access_token}`
+            }}).then(r => r.data).then((result) => {
             dispatch({type: success, payload: result})
         })
     }, [url])
