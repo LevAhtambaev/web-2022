@@ -6,6 +6,8 @@ export function getJson(url: string) {
      return axios.get(`${ENDPOINT}/${url}`).then(r => r.data)
 }
 
+
+
 export function getToken() {
     let tokens = document.cookie.split(' ')
     let access_token = ''
@@ -34,6 +36,17 @@ export function deleteCart (url: string) {
 
 export function addToCart (url: string, uuid: string)  {
     const body = { Car: uuid }
+    let access_token = getToken()
+    return  axios.post(`${ENDPOINT}/${url}`, body, {withCredentials: true, headers: {
+            "Authorization": `Bearer ${access_token}`
+        }}).then(function (response) {
+        console.log(response);
+    })
+
+}
+
+export function addOrder (url: string, cars_uuid: string[])  {
+    const body = { Cars: cars_uuid }
     let access_token = getToken()
     return  axios.post(`${ENDPOINT}/${url}`, body, {withCredentials: true, headers: {
             "Authorization": `Bearer ${access_token}`

@@ -4,6 +4,7 @@ import {GetCart} from "../requests/GetCart";
 import React, {createContext} from "react";
 import {cart_context} from "../context/context";
 import {Navbar} from "./Navbar";
+import {AddOrder} from "../requests/AddOrder";
 
 
 export const MyContext = createContext(cart_context);
@@ -14,7 +15,10 @@ export function CartPage() {
     if (cart.length === 0) {
         showCart = false
     }
-
+    let cars_uuid: string[] = new Array()
+    cart.map((cart: ICart) => {
+        cars_uuid.push(cart.Car)
+    })
     return (
         <>
             <Navbar/>
@@ -29,7 +33,14 @@ export function CartPage() {
                 })}
                 {!showCart && <h1 className="text-2xl text-center">Ваша корзина пуста!</h1>}
             </div>
+            {showCart &&
+                <form>
+                    <p className="text-center">
+                        {AddOrder(cars_uuid)}
+                    </p>
+                </form>}
         </div>
+
         </>
     )
 }

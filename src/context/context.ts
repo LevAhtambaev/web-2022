@@ -1,4 +1,4 @@
-import {ICar} from "../models";
+import {ICar, IOrder} from "../models";
 import {ICart} from "../models";
 
 export let car_context: ICar = {
@@ -21,4 +21,12 @@ export let car_context: ICar = {
 export let cart_context: ICart = {
     UUID: "",
     Car: "",
+}
+
+export let orders_context: IOrder = {
+    UUID: "",
+    Cars: [""],
+    UserUUID: "",
+    Date: "",
+    Status: "",
 }

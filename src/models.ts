@@ -20,3 +20,12 @@ export interface ICart {
     UUID: string
     Car: string
 }
+
+
+export interface IOrder {
+    UUID: string
+    Cars: string[]
+    UserUUID: string
+    Date: string
+    Status: string
+}
