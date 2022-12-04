@@ -52,6 +52,7 @@ func (a *Application) StartServer() {
 	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
 	r.Use(a.WithAuthCheck(role.Manager)).POST("/cars", a.AddCar)
 	r.Use(a.WithAuthCheck(role.Manager)).GET("/orders", a.GetOrders)
+	r.Use(a.WithAuthCheck(role.Manager)).GET("/user/:uuid", a.GetUser)
 	r.Use(a.WithAuthCheck(role.Manager)).PUT("/orders/:uuid", a.ChangeStatus)
 	r.Use(a.WithAuthCheck(role.Manager)).DELETE("/cars/:uuid", a.DeleteCar)
 
