@@ -39,9 +39,9 @@ func (r *Repository) AddOrder(order ds.Order) error {
 	return nil
 }
 
-func (r *Repository) GetOrders() ([]ds.Order, error) {
+func (r *Repository) GetOrders(orderBy string) ([]ds.Order, error) {
 	var orders []ds.Order
-	err := r.db.Find(&orders).Error
+	err := r.db.Order(orderBy).Find(&orders).Error
 	return orders, err
 }
 
