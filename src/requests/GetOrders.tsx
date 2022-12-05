@@ -3,10 +3,10 @@ import {getToken} from "../modules";
 import axios from "axios";
 import {ENDPOINT} from "../App";
 
-const initialState = {order: []}
+
 const success = "Success"
 
-function reducer(state: any, action: { type: any; payload: any; }) {
+export function reducer(state: any, action: { type: any; payload: any; }) {
     switch (action.type) {
         case success:
             return {
@@ -17,18 +17,4 @@ function reducer(state: any, action: { type: any; payload: any; }) {
     }
 }
 
-export function GetOrders() {
-    const [state, dispatch] = useReducer(reducer, initialState)
-    const url = `orders`
-    let access_token = getToken()
 
-    useEffect(() => {
-        axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
-                "Authorization": `Bearer ${access_token}`
-            }}).then(r => r.data).then((result) => {
-            dispatch({type: success, payload: result})
-        })
-    }, [url])
-
-    return state.order
-}

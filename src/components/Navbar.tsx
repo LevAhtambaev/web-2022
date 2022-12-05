@@ -6,13 +6,12 @@ import {useState} from "react";
 
 
 export function Navbar() {
-    let access_token = getToken()
+    const access_token = getToken()
     const [roles, setRole] = useState()
-    let role = getRole(access_token)
+    const role = getRole(access_token)
     role.then((result) => {
         setRole(result)
     })
-    console.log()
     if (access_token === "") {
         return <GuestNavbar/>;
     } else if (roles === 1){
@@ -21,7 +20,6 @@ export function Navbar() {
         return <LoginNavbar/>;
     }
 }
-
 
 
 

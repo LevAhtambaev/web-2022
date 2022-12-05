@@ -43,7 +43,7 @@ export function Login() {
                             Password
                         </label>
                         <input
-                            type="text"
+                            type="password"
                             onChange={handleChangePass}
                             value={pass}
                             className="block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40"

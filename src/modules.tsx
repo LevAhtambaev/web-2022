@@ -25,6 +25,13 @@ export function getRole(token: string) {
         }}).then(r => r.data)
 }
 
+export function updateStatus(token: string, uuid: string, status: string) {
+    const body = { Status: status }
+    return axios.put(`${ENDPOINT}/orders/${uuid}`, body,{withCredentials: true, headers: {
+            "Authorization": `Bearer ${token}`
+        }}).then(r => r.data)
+}
+
 
 export function deleteCart (url: string) {
     let access_token = getToken()
