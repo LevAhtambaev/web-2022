@@ -92,6 +92,7 @@ export function OrderPage() {
                         type="text"
                         onChange={handleChangeStDate}
                         value={stDate}
+                        maxLength={10}
                         className="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-base"
                         />
                      </div>
@@ -103,6 +104,7 @@ export function OrderPage() {
                         type="text"
                         onChange={handleChangeEndDate}
                         value={endDate}
+                        maxLength={10}
                         className="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-base"
                         />
                     </div>
