@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"web-2022/internal/app/ds"
 	"web-2022/swagger/models"
@@ -85,7 +86,7 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 
 }
 
-// ChangePrice      godoc
+// ChangeCar      godoc
 // @Summary         Change car price
 // @Description     Change a price for a car via its uuid
 // @Tags            Change
@@ -98,7 +99,7 @@ func (a *Application) GetCarPrice(gCtx *gin.Context) {
 // @Failure 		404 {object} models.ModelError
 // @Failure 	 	500 {object} models.ModelError
 // @Router          /cars/{UUID} [put]
-func (a *Application) ChangePrice(gCtx *gin.Context) {
+func (a *Application) ChangeCar(gCtx *gin.Context) {
 	UUID, err := uuid.Parse(gCtx.Param("uuid"))
 	if err != nil {
 		gCtx.JSON(
@@ -122,7 +123,8 @@ func (a *Application) ChangePrice(gCtx *gin.Context) {
 			})
 		return
 	}
-	resp, err := a.repo.ChangePrice(UUID, car.SalePrice)
+	log.Println(car)
+	resp, err := a.repo.ChangeCar(UUID, car)
 	if err != nil {
 		if resp == 404 {
 			gCtx.JSON(

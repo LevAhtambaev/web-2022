@@ -44,8 +44,10 @@ func (a *Application) AddOrder(gCtx *gin.Context) {
 }
 
 func (a *Application) GetOrders(gCtx *gin.Context) {
-	orderBy := gCtx.Param("order_by")
-	resp, err := a.repo.GetOrders(orderBy)
+	stDate := gCtx.Query("start_date")
+	endDate := gCtx.Query("end_date")
+	status := gCtx.Query("status")
+	resp, err := a.repo.GetOrders(stDate, endDate, status)
 	if err != nil {
 		gCtx.JSON(
 			http.StatusInternalServerError,

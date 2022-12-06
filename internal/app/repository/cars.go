@@ -50,16 +50,11 @@ func (r *Repository) GetCarPrice(uuid uuid.UUID) (uint64, error) {
 	return car.SalePrice, nil
 }
 
-func (r *Repository) ChangePrice(uuid uuid.UUID, price uint64) (int, error) {
-	var car ds.Car
-	err := r.db.First(&car, "uuid = ?", uuid).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 404, err
-		}
-		return 500, err
-	}
-	err = r.db.Model(&car).Update("SalePrice", price).Error
+func (r *Repository) ChangeCar(uuid uuid.UUID, car ds.Car) (int, error) {
+	car.UUID = uuid
+	err := r.db.Model(&car).Updates(ds.Car{Name: car.Name, SalePrice: car.SalePrice, Year: car.Year, BodyType: car.BodyType,
+		EngineType: car.EngineType, EngineVolume: car.EngineVolume, Power: car.Power, Gearbox: car.Gearbox,
+		TypeOfDrive: car.TypeOfDrive, Color: car.Color, Mileage: car.Mileage, Wheel: car.Wheel, Description: car.Description, Image: car.Image}).Error
 	//if errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil {
 		return 500, err

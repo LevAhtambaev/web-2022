@@ -45,16 +45,15 @@ func (a *Application) StartServer() {
 	r.GET("/logout", a.Logout)
 	r.GET("/role", a.Role)
 
-	r.PUT("/cars/:uuid", a.ChangePrice)
-
 	r.DELETE("/cart/:uuid", a.DeleteFromCart)
 
 	r.Use(a.WithAuthCheck(role.Buyer, role.Manager, role.Admin)).GET("/cart", a.GetCart)
 	r.Use(a.WithAuthCheck(role.Manager)).POST("/cars", a.AddCar)
-	r.Use(a.WithAuthCheck(role.Manager)).GET("/orders/:order_by", a.GetOrders)
+	r.Use(a.WithAuthCheck(role.Manager)).GET("/orders", a.GetOrders)
 	r.Use(a.WithAuthCheck(role.Manager)).GET("/user/:uuid", a.GetUser)
 	r.Use(a.WithAuthCheck(role.Manager)).PUT("/orders/:uuid", a.ChangeStatus)
 	r.Use(a.WithAuthCheck(role.Manager)).DELETE("/cars/:uuid", a.DeleteCar)
+	r.Use(a.WithAuthCheck(role.Manager)).PUT("/cars/:uuid", a.ChangeCar)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
