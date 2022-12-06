@@ -47,6 +47,7 @@ export function Order() {
                 >
                     <option>Оформлен</option>
                     <option>Оплачен</option>
+                    <option>Подтвержден</option>
                     <option>Доставлен</option>
                 </select>
             </div>

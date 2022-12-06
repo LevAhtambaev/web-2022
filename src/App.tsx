@@ -9,6 +9,7 @@ import {Registration} from "./components/RegisterPage";
 import {ProfilePage} from "./components/ProfilePage";
 import {AddCar} from "./components/AddCar";
 import {OrderPage} from "./components/OrderPage";
+import {ChangeCar} from "./components/ChangeCar";
 
 export const ENDPOINT = "http://localhost:8080"
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/registration" element={<Registration/>}/>
                 <Route path="/add" element={<AddCar/>}/>
+                <Route path="/change" element={<ChangeCar/>}/>
                 <Route path="/profile" element={<ProfilePage/>}></Route>
                 <Route path="/orders" element={<OrderPage/>}></Route>
             </Routes>

@@ -22,59 +22,93 @@ export function OrderPage() {
     const url = `orders`
     let access_token = getToken()
 
-    const [orderBy, setOrderBy] = useState("date");
+    const [filter, setFilter] = useState(false);
+    const [stDate, setStDate] = useState('');
+    const handleChangeStDate = (event: { target: { value: any; }; }) => {
+        setStDate(event.target.value);
+    };
+    const [endDate, setEndDate] = useState('');
+    const handleChangeEndDate = (event: { target: { value: any; }; }) => {
+        setEndDate(event.target.value);
+    };
+    const [status, setStatus] = useState('');
+    const handleChangeStatus = (event: { target: { value: any; }; }) => {
+        setStatus(event.target.value);
+    };
 
     useEffect(() => {
-        axios.get(`${ENDPOINT}/${url}/${orderBy}`, {withCredentials: true, headers: {
+        axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
                 "Authorization": `Bearer ${access_token}`
-            }}).then(r => r.data).then((result) => {
+            }, params:{start_date: stDate, end_date: endDate, status: status}}).then(r => r.data).then((result) => {
             dispatch({type: success, payload: result})
         })
     }, [])
-
 
     let showOrders = true
     if (state.order.length === 0) {
         showOrders = false
     }
 
-    const [doubleTapDate, setDoubleTapDate] = useState(false);
-    const [doubleTapStatus, setDoubleTapStatus] = useState(false);
-    const [dateOrder, setDate] = useState("date");
-    const [statusOrder, setStatus] = useState("status");
-
     useEffect(() => {
-        if (doubleTapDate) {
-            setDate("date");
-        } else {
-            setDate("date desc");
-        }
-        axios.get(`${ENDPOINT}/${url}/${dateOrder}`, {withCredentials: true, headers: {
-                "Authorization": `Bearer ${access_token}`
-            }}).then(r => r.data).then((result) => {
-            dispatch({type: success, payload: result})
-        })
-    }, [doubleTapDate])
+       if (filter) {
+           axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
+                   "Authorization": `Bearer ${access_token}`
+               }, params:{start_date: stDate, end_date: endDate, status: status}}).then(r => r.data).then((result) => {
+               dispatch({type: success, payload: result})
+           })
+       } else {
+           axios.get(`${ENDPOINT}/${url}`, {withCredentials: true, headers: {
+                   "Authorization": `Bearer ${access_token}`
+               }, params:{start_date: "", end_date: "", status: ""}}).then(r => r.data).then((result) => {
+               dispatch({type: success, payload: result})
+           })
+       }
+    }, [filter])
 
-    useEffect(() => {
-        if (doubleTapStatus) {
-            setStatus("status");
-        } else {
-            setStatus("status desc");
-        }
-        axios.get(`${ENDPOINT}/${url}/${statusOrder}`, {withCredentials: true, headers: {
-                "Authorization": `Bearer ${access_token}`
-            }}).then(r => r.data).then((result) => {
-            dispatch({type: success, payload: result})
-        })
-    }, [doubleTapStatus])
 
     return (
         <>
             <Navbar/>
 
             <div className="bg-gray-100 min-h-screen">
-
+                <div className="w-1/2 mx-auto">
+                <div className="grid grid-rows-2 grid-cols-3 justify-items-center">
+                    <div>
+                        <label htmlFor="first-name" className="block text-lg text-center font-medium text-gray-700">
+                            Статус
+                        </label>
+                        <input
+                            type="text"
+                            onChange={handleChangeStatus}
+                            value={status}
+                            className="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-base"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="first-name" className="block text-lg text-center font-medium text-gray-700">
+                             С даты
+                        </label>
+                        <input
+                        type="text"
+                        onChange={handleChangeStDate}
+                        value={stDate}
+                        className="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-base"
+                        />
+                     </div>
+                    <div>
+                        <label htmlFor="first-name" className="block text-lg text-center font-medium text-gray-700">
+                         По дату
+                        </label>
+                        <input
+                        type="text"
+                        onChange={handleChangeEndDate}
+                        value={endDate}
+                        className="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-base"
+                        />
+                    </div>
+                    <button className="mt-5 col-span-3 border-2 border-slate-300 border-indigo-400 rounded-full" onClick={() => {setFilter(!filter)}}> {!filter && <p>Применить фильтр</p>}{filter && <p>Снять фильтр</p>} </button>
+                </div>
+                </div>
                 <div className="px-2 sm:px-0 pt-5 flex flex-col gap-0 mx-auto container">
                     <div className="border-2 border-slate-300 -mb-1 rounded py-2  grid grid-cols-4">
                         <p className="place-self-center text-lg font-bold">
@@ -88,14 +122,13 @@ export function OrderPage() {
                             <p className="place-self-center text-lg font-bold">
                                 Дата
                             </p>
-                            <button onClick={() => {setDoubleTapDate(!doubleTapDate)}}>По дате</button>
+
                         </div>
 
                         <div className="place-self-center text-lg font-bold">
                             <p className="place-self-center text-lg font-bold">
                                 Статус
                             </p>
-                            <button onClick={() => {setDoubleTapStatus(!doubleTapStatus)}}>По статусу</button>
                         </div>
                     </div>
                     {showOrders &&  state.order.map((order: IOrder, key: any) => {
